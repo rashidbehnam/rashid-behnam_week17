@@ -57,6 +57,9 @@ tbody td {
   border: 1px solid #ddd; /* Subtle borders */
   padding: 8px 16px; /* Adds spacing inside cells */
 }
+tbody td:last-child{
+  text-align: center;
+}
 
 tbody tr:nth-child(even) { 
   background-color: #f9f9f9; /* Alternating row color for readability */

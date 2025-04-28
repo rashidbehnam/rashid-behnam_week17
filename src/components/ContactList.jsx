@@ -17,7 +17,8 @@ const ContactList = () => {
   const [showModal,setShowModal]=useState(false);
   const [showEditModal,setShowEditModal]=useState(false); 
   const filteredContacts = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(search) || contact.family.toLowerCase().includes(search) || contact.email.includes(search) || contact.phone.includes(search)
+    (contact.name.toLowerCase() + ' ' + contact.family.toLowerCase())
+    .includes(search.toLowerCase()) || contact.email.includes(search) || contact.phone.includes(search)
   );
 
   const handleDeleteGroup = async() => {

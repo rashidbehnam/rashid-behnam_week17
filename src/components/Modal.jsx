@@ -125,9 +125,13 @@ function Modal({show,onClose}) {
         const hasErrors=validateForm();
 
         if (!hasErrors) {
-         dispatch({type:"ADD_CONTACT",payload:formData})
+          const trimmedFormData = Object.fromEntries(
+            Object.entries(formData).map(([key, value]) => 
+              [key, typeof value === 'string' ? value.trim() : value]
+            )
+          );
+         dispatch({type:"ADD_CONTACT",payload:trimmedFormData})
          onClose();
-         console.log('hit')
         }
       };
 
@@ -143,7 +147,7 @@ function Modal({show,onClose}) {
         <form onSubmit={handleSubmit}>
       <div className='input-group'>
         <label>Name:</label>
-        <input type="text" name="name" value={formData.name} onChange={handleChange} />
+        <input ref={buttonRef} type="text" name="name" value={formData.name} onChange={handleChange} />
         {errors.name && <p style={{ color: "red" }}>{errors.name}</p>}
       </div>
       <div className='input-group'>
@@ -166,7 +170,7 @@ function Modal({show,onClose}) {
       
       <div className="button-group">
         <button  tabIndex={2} className="button button-primary" type="submit">Submit</button>
-      <button type='button' tabIndex={1} className='button' onClick={onClose} ref={buttonRef} >Close</button>
+      <button type='button' tabIndex={1} className='button' onClick={onClose}  >Close</button>
       </div>
         
     </form>

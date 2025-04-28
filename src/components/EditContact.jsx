@@ -119,7 +119,7 @@ function Modal({show,contact, onClose}) {
         setFormData({ ...formData, [name]: value });
         validateField(name, value); 
       };
-    
+     
       const handleSubmit = (e) => {
         e.preventDefault();
         
@@ -127,7 +127,12 @@ function Modal({show,contact, onClose}) {
         const hasErrors=validateForm();
 
         if (!hasErrors) {
-         dispatch({type:"EDIT_CONTACT",payload:formData})
+          const trimmedFormData = Object.fromEntries(
+            Object.entries(formData).map(([key, value]) => 
+              [key, typeof value === 'string' ? value.trim() : value]
+            )
+          );
+         dispatch({type:"EDIT_CONTACT",payload:trimmedFormData})
          onClose();
         }
       };
