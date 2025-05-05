@@ -1,40 +1,34 @@
-import { useState } from 'react';
-import ConfirmComponent from '../components/Confirm'
-export function useConfirm() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [message, setMessage] = useState('');
+import {  useState } from 'react';
+import {useModal} from '../Context/ModalContext'
+
+export const useConfirm=()=> {
+  const { openModal, closeModal } = useModal();
   const [resolver, setResolver] = useState(null);
 
   function confirm(msg) {
-    setMessage(msg);
-    setIsOpen(true);
-
     return new Promise((resolve) => {
-      setResolver(() => resolve);
+      setResolver(() => resolve); // Ensure we set resolver correctly
+      openModal('Confirmation', <>
+        <p>{msg}</p>
+        <div className="button-group-confirm">
+          <button className="button button-primary" onClick={() => handleConfirm(true)}>Yes</button>
+          <button className="button" onClick={() => handleConfirm(false)}>No</button>
+        </div>
+      </>);
     });
   }
 
-  function handleConfirm() {
-    if (resolver) resolver(true);
+  const handleConfirm=(result)=> {
+    if (resolver) {
+      resolver(result); // Resolve the promise with `true` or `false`
+    }
     close();
   }
 
-  function handleCancel() {
-    if (resolver) resolver(false);
-    close();
-  }
-
-  function close() {
-    setIsOpen(false);
-    setMessage('');
+  const close=()=> {
     setResolver(null);
+    closeModal();
   }
 
-  const ConfirmModal = isOpen ? (
-    <ConfirmComponent show={isOpen} message={message} onCancel={handleCancel} onConfirm={handleConfirm} />
-  ) : null;
-
-  return { confirm, ConfirmModal };
+  return confirm;
 }
-
-

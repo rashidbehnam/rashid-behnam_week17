@@ -1,21 +1,21 @@
 import { useContext, useState } from "react";
 import ContactContext from "../context/ContactContext";
+import {useModal} from '../Context/ModalContext';
 import ContactItem from "./ContactItem";
-import Modal from "./Modal";
-import EditContact from './EditContact'
+
 import searchIcon from '../assets/search.svg'
 import addIcon from '../assets/add.svg'
-
-import {useConfirm} from '../hooks/useConfirm'
+import ContactForm from '../components/ContactForm'
+import {useConfirm} from '../Context/ConfirmContext'
 const ContactList = () => {
   
-  const {confirm, ConfirmModal}=useConfirm();
+  const {openModal,closeModal}=useModal();
+  const {confirm} =useConfirm();
   const { contacts, dispatch } = useContext(ContactContext);
   const [selectedContacts, setSelectedContacts] = useState([]);
-  const [editContact,setEditContact]=useState(null);
+
   const [search, setSearch] = useState("");
-  const [showModal,setShowModal]=useState(false);
-  const [showEditModal,setShowEditModal]=useState(false); 
+ 
   const filteredContacts = contacts.filter(contact =>
     (contact.name.toLowerCase() + ' ' + contact.family.toLowerCase())
     .includes(search.toLowerCase()) || contact.email.includes(search) || contact.phone.includes(search)
@@ -32,31 +32,24 @@ const ContactList = () => {
   const handleDelete=async(id)=>{
     const confirmed= await confirm("Are you sure to delete the selected contact?");
     if(confirmed){
-
+      console.log(id)
       dispatch({type:"DELETE_CONTACT",payload:id});
     }
   }
   
-  const handleEdit=(contact)=>{
-      if(contact !=null){
-        setEditContact(contact);
-        setShowEditModal(true);
-      }
-  }
+
 
   return (
     <main>
-      {ConfirmModal}
-      <Modal show={showModal} onClose={()=>setShowModal(false)} />
-      <EditContact show={showEditModal} contact={editContact}  onClose={()=>setShowEditModal(false)}/>
+   
       <div className="list-header">
       <h1 className="list-header__title">Contacts</h1>
       <div>
-      <input type="text" placeholder="Search..." value={search} onChange={e => setSearch(e.target.value)} />
+      <input type="text" placeholder="Search..." value={search} onChange={e => setSearch(e.target.value)} className="search-box" />
       <img src={searchIcon} alt="search icons" className="icon"/>
       </div>
       <div >
-      <button onClick={()=>setShowModal(true) }className="button button-primary">New <img src={addIcon} alt="add icon" className="icon icon-white"/></button>
+      <button onClick={()=>openModal('New Contact',<ContactForm closeForm={closeModal}/>) }className="button button-primary">New <img src={addIcon} alt="add icon" className="icon icon-white"/></button>
       <button onClick={handleDeleteGroup} disabled={!selectedContacts.length} className="button">Delete Selected</button>
       </div>
       
@@ -75,7 +68,7 @@ const ContactList = () => {
   <tbody>
     
   {filteredContacts.map(contact => (
-      <ContactItem key={contact.id} contact={contact} selectedContacts={selectedContacts} setSelectedContacts={setSelectedContacts} onDelete={handleDelete} onEdit={handleEdit}/>
+      <ContactItem key={contact.id} contact={contact} selectedContacts={selectedContacts} setSelectedContacts={setSelectedContacts} onDelete={handleDelete} onEdit={()=>openModal("Edit Contact",<ContactForm closeForm={closeModal} contact={contact}/>)} />
     ))}
   </tbody>
 </table>
