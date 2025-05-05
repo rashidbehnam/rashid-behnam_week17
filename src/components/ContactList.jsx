@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import ContactContext from "../context/ContactContext";
 import {useModal} from '../Context/ModalContext';
 import ContactItem from "./ContactItem";
-
+import { toast } from "react-toastify";
 import searchIcon from '../assets/search.svg'
 import addIcon from '../assets/add.svg'
 import ContactForm from '../components/ContactForm'
@@ -26,14 +26,15 @@ const ContactList = () => {
     if (confirmed) {
       dispatch({ type: "DELETE_GROUP", payload: selectedContacts });
       setSelectedContacts([]);
+      toast.success("Selected contacts are deleted successfully!");
     }
   };
 
   const handleDelete=async(id)=>{
     const confirmed= await confirm("Are you sure to delete the selected contact?");
     if(confirmed){
-      console.log(id)
       dispatch({type:"DELETE_CONTACT",payload:id});
+      toast.success("Contact deleted successfully!");
     }
   }
   

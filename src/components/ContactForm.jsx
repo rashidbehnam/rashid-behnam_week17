@@ -1,8 +1,9 @@
-import { useState, useContext } from "react";
+import { useContext } from "react";
 import ContactContext from "../context/ContactContext";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { toast } from "react-toastify";
 
 const ContactForm = ({ contact, closeForm }) => {
 
@@ -34,6 +35,8 @@ const ContactForm = ({ contact, closeForm }) => {
     
     dispatch({ type: contact ? "EDIT_CONTACT" : "ADD_CONTACT", payload: contact? {...data,id:contact.id} :data });
     closeForm();
+    toast.success(`Contact ${contact? 'updated':'added'} successfully!`);
+    
   };
 
   return (
