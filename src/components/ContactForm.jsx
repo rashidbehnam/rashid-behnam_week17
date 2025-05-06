@@ -1,5 +1,4 @@
-import { useContext } from "react";
-import ContactContext from "../context/ContactContext";
+import {useContact} from "../context/ContactContext";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -26,16 +25,19 @@ const ContactForm = ({ contact, closeForm }) => {
   });
   const {register,handleSubmit,formState:{errors}}=useForm({resolver:yupResolver(schema)});
 
-  const { dispatch } = useContext(ContactContext);
+  const { addContact,editContact } = useContact();
 
 
   const onSubmit = data => {
     
-
+    if(contact){
+        editContact(contact.id,data);
+    }
+    else{
+        addContact(data)
+    }
     
-    dispatch({ type: contact ? "EDIT_CONTACT" : "ADD_CONTACT", payload: contact? {...data,id:contact.id} :data });
     closeForm();
-    toast.success(`Contact ${contact? 'updated':'added'} successfully!`);
     
   };
 

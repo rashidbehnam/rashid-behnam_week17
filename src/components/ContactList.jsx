@@ -1,8 +1,8 @@
-import { useContext, useState } from "react";
-import ContactContext from "../context/ContactContext";
+import { useState } from "react";
+import {useContact} from "../context/ContactContext";
 import {useModal} from '../Context/ModalContext';
 import ContactItem from "./ContactItem";
-import { toast } from "react-toastify";
+
 import searchIcon from '../assets/search.svg'
 import addIcon from '../assets/add.svg'
 import ContactForm from '../components/ContactForm'
@@ -11,7 +11,7 @@ const ContactList = () => {
   
   const {openModal,closeModal}=useModal();
   const {confirm} =useConfirm();
-  const { contacts, dispatch } = useContext(ContactContext);
+  const { contacts,deleteGroup,deleteContact } = useContact();
   const [selectedContacts, setSelectedContacts] = useState([]);
 
   const [search, setSearch] = useState("");
@@ -24,17 +24,16 @@ const ContactList = () => {
   const handleDeleteGroup = async() => {
     const confirmed=await confirm("Are you sure you want to Delete?");
     if (confirmed) {
-      dispatch({ type: "DELETE_GROUP", payload: selectedContacts });
+      deleteGroup(selectedContacts);
       setSelectedContacts([]);
-      toast.success("Selected contacts are deleted successfully!");
+    
     }
   };
 
   const handleDelete=async(id)=>{
     const confirmed= await confirm("Are you sure to delete the selected contact?");
     if(confirmed){
-      dispatch({type:"DELETE_CONTACT",payload:id});
-      toast.success("Contact deleted successfully!");
+      deleteContact(id);
     }
   }
   
